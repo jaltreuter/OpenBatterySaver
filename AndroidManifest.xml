@@ -12,6 +12,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
+        android:name="com.masonware.openbatterysaver.BatterySaverApplication"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -32,7 +33,7 @@
         </activity>
         
         <service
-            android:name="com.masonware.openbatterysaver.BatterySaverService">
+            android:name="com.masonware.openbatterysaver.service.BatterySaverService">
 		    <intent-filter>
 		        <action android:name="com.masonware.batteryservice" />
 		    </intent-filter>

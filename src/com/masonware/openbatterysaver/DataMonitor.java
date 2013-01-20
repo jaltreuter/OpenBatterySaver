@@ -1,6 +1,7 @@
 package com.masonware.openbatterysaver;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.net.TrafficStats;
 import android.os.Looper;
@@ -8,10 +9,10 @@ import android.os.Looper;
 public class DataMonitor {
 
 	private static DataMonitor instance;
-	private static CopyOnWriteArrayList<DataMonitorThread> threads;
+	private static ArrayList<DataMonitorThread> threads;
 	
 	private DataMonitor() {
-		threads = new CopyOnWriteArrayList<DataMonitorThread>();
+		threads = new ArrayList<DataMonitorThread>();
 	}
 	
 	public static DataMonitor getInstance() {
@@ -28,7 +29,14 @@ public class DataMonitor {
 	}
 
 	public void unregisterListener(Listener listener) {
-		threads.remove(listener);
+		Iterator<DataMonitorThread> it = threads.iterator();
+		while(it.hasNext()) {
+			DataMonitorThread thread = it.next();
+			if(thread.equals(listener)) {
+				thread.end();
+				it.remove();
+			}
+		}
 	}
 	
 	public interface Listener {
@@ -81,6 +89,10 @@ public class DataMonitor {
 				return true;
 			}
 			return false;
+		}
+		
+		private void end() {
+			shouldRun = false;
 		}
 		
 		/**
