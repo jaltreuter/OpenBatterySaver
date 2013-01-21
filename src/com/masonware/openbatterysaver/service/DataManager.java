@@ -25,6 +25,7 @@ class DataManager implements DataMonitor.Listener {
 	
 	private DataManager() {
 		context = BatterySaverApplication.getAppContext();
+		shouldRun = false;
 	}
 	
 	public static DataManager getInstance() {
@@ -53,7 +54,7 @@ class DataManager implements DataMonitor.Listener {
 		if (this.listener != listener) {
 			throw new IllegalArgumentException("Must pass original listener to unregister");
 		}
-		listener = null;
+		this.listener = null;
 		shouldRun = false;
 		DataUtils.setMobileDataEnabled(context, true);
 	}
