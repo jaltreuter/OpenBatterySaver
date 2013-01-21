@@ -1,4 +1,4 @@
-package com.masonware.openbatterysaver;
+package com.masonware.openbatterysaver.utils;
 
 import java.util.ArrayList;
 import java.util.Iterator;

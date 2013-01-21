@@ -5,8 +5,8 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.masonware.openbatterysaver.BatterySaverApplication;
-import com.masonware.openbatterysaver.DataMonitor;
-import com.masonware.openbatterysaver.DataUtils;
+import com.masonware.openbatterysaver.utils.DataMonitor;
+import com.masonware.openbatterysaver.utils.DataUtils;
 
 class DataManager implements DataMonitor.Listener {
 	public interface Listener {
@@ -14,8 +14,8 @@ class DataManager implements DataMonitor.Listener {
 	}
 
 	private static final long DATA_MIN_THRESHOLD = 650;
-	private static final long WAKEUP_PERIOD = 1000 * 10;//1000 * 60 * 15;
-	private static final long MIN_SYNC_TIME = 650;
+	private static final long WAKEUP_PERIOD = 1000 * 60 * 15;
+	private static final long MIN_SYNC_TIME = 1000 * 15;
 	
 	private static DataManager instance;
 	private Listener listener;
@@ -35,6 +35,7 @@ class DataManager implements DataMonitor.Listener {
 	}
 	
 	public void start(Listener listener) throws IllegalArgumentException {
+		Log.v("DataManager", "Starting DataManager");
 		if (this.listener != null) {
 			throw new IllegalArgumentException("Listener already exists");
 		}
@@ -43,7 +44,12 @@ class DataManager implements DataMonitor.Listener {
 		prepareDisableData();
 	}
 	
+	public boolean isRunning() {
+		return shouldRun;
+	}
+	
 	public void stop(Listener listener) throws IllegalArgumentException {
+		Log.v("DataManager", "Stopping DataManager");
 		if (this.listener != listener) {
 			throw new IllegalArgumentException("Must pass original listener to unregister");
 		}

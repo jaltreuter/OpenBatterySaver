@@ -1,5 +1,7 @@
 package com.masonware.openbatterysaver;
 
+import com.masonware.openbatterysaver.utils.DataMonitor;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

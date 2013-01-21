@@ -1,4 +1,4 @@
-package com.masonware.openbatterysaver;
+package com.masonware.openbatterysaver.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -32,9 +32,10 @@ public class DataUtils {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void forceSync(Context context) {
 		Bundle extras = new Bundle();
-		extras.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
+		extras.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 		context.getContentResolver().startSync(null, extras); 
 	}
 	
