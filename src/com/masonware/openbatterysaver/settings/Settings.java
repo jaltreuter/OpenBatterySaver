@@ -6,71 +6,83 @@ import android.preference.PreferenceManager;
 import com.masonware.openbatterysaver.BatterySaverApplication;
 
 public class Settings {
+	
+	public static enum SettingKey {
+		BATTERY_SAVER_SERVICE_ON,
+		BATTERY_SAVER_SERVICE_ACTIVE,
+		NOTIFICATION_PRIORITY_ACTIVE,
+		NOTIFICATION_PRIORITY_IDLE,
+		DATA_USER_SETTING;
+	}
+	
 	public static SharedPreferences getSharedPreferences() {
 		return PreferenceManager.getDefaultSharedPreferences(BatterySaverApplication.getAppContext());
 	}
 	
-	public static boolean hasSetting(String key) {
-		Object value = getSharedPreferences().getAll().get(key);
+	public static boolean hasSetting(SettingKey key) {
+		Object value = getSharedPreferences().contains(key.name());
 		return value != null;
 	}
 	
-	public static int getInt(String key, int defaultValue) {
-		return getSharedPreferences().getInt(key, defaultValue);
+	public static void removeSetting(SettingKey key) {
+		SharedPreferences prefs = getSharedPreferences();
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.remove(key.name());
+		editor.commit();
 	}
 	
-	public static boolean getBoolean(String key, boolean defaultValue) {
-		return getSharedPreferences().getBoolean(key, defaultValue);
-	}
-
-	public static String getEnum(String key, String defaultValue) {
-		return getSharedPreferences().getString(key, defaultValue);
+	public static int getInt(SettingKey key, int defaultValue) {
+		return getSharedPreferences().getInt(key.name(), defaultValue);
 	}
 	
-	public static float getFloat(String key, float defaultvalue) {
-		return getSharedPreferences().getFloat(key, defaultvalue);
+	public static boolean getBoolean(SettingKey key, boolean defaultValue) {
+		return getSharedPreferences().getBoolean(key.name(), defaultValue);
+	}
+	
+	public static float getFloat(SettingKey key, float defaultvalue) {
+		return getSharedPreferences().getFloat(key.name(), defaultvalue);
 	}	
 
-	public static String getString(String key, String defaultValue) {
-		return getSharedPreferences().getString(key, defaultValue);
+	public static String getString(SettingKey key, String defaultValue) {
+		return getSharedPreferences().getString(key.name(), defaultValue);
 	}	
 	
-	public static long getLong(String key, long defaultValue) {
-		return getSharedPreferences().getLong(key, defaultValue);
+	public static long getLong(SettingKey key, long defaultValue) {
+		return getSharedPreferences().getLong(key.name(), defaultValue);
 	}	
 	
-	public static void putInt(String key, int value) {
+	public static void putInt(SettingKey key, int value) {
 		SharedPreferences prefs = getSharedPreferences();
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putInt(key, value);
+		editor.putInt(key.name(), value);
 		editor.commit();
 	}
 	
-	public static void putLong(String key, long value) {
+	public static void putLong(SettingKey key, long value) {
 		SharedPreferences prefs = getSharedPreferences();
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putLong(key, value);
+		editor.putLong(key.name(), value);
 		editor.commit();
 	}
 	
-	public static void putFloat(String key, float value) {
+	public static void putFloat(SettingKey key, float value) {
 		SharedPreferences prefs = getSharedPreferences();
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putFloat(key, value);
+		editor.putFloat(key.name(), value);
 		editor.commit();
 	}
 	
-	public static void putString(String key, String value) {
+	public static void putString(SettingKey key, String value) {
 		SharedPreferences prefs = getSharedPreferences();
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putString(key, value);
+		editor.putString(key.name(), value);
 		editor.commit();
 	}
 
-	public static void putBoolean(String key, boolean value) {
+	public static void putBoolean(SettingKey key, boolean value) {
 		SharedPreferences prefs = getSharedPreferences();
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putBoolean(key, value);
+		editor.putBoolean(key.name(), value);
 		editor.commit();
 	}
 }

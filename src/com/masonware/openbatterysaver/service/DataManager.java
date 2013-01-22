@@ -56,7 +56,7 @@ class DataManager implements DataMonitor.Listener {
 		}
 		this.listener = null;
 		shouldRun = false;
-		DataUtils.setMobileDataEnabled(context, true);
+		DataUtils.resetMobileDataEnabled(context);
 	}
 
 	@Override

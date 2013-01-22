@@ -3,10 +3,7 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="${packageName}.${activityClass}$GeneralPreferenceFragment"
+        android:fragment="com.masonware.openbatterysaver.settings.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
-    <header
-        android:fragment="${packageName}.${activityClass}$NotificationPreferenceFragment"
-        android:title="@string/pref_header_notifications" />
 
 </preference-headers>
