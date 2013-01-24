@@ -8,7 +8,7 @@ import com.masonware.openbatterysaver.BatterySaverApplication;
 import com.masonware.openbatterysaver.utils.DataMonitor;
 import com.masonware.openbatterysaver.utils.DataUtils;
 
-class DataManager implements DataMonitor.Listener {
+public class DataManager implements DataMonitor.Listener {
 	public interface Listener {
 		public void onDataStatusChanged(boolean enabled);
 	}
@@ -56,7 +56,7 @@ class DataManager implements DataMonitor.Listener {
 		}
 		this.listener = null;
 		shouldRun = false;
-		DataUtils.resetMobileDataEnabled(context);
+		DataUtils.resetMobileDataEnabled(context, listener);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ class DataManager implements DataMonitor.Listener {
 		if(!shouldRun) {return;}
 		Log.v("DataManager", "onDataRateUpdate bps=" + bytesPerSecond);
 		if(bytesPerSecond < DATA_MIN_THRESHOLD) {
-			DataUtils.setMobileDataEnabled(context, false);
+			DataUtils.setMobileDataEnabled(context, false, listener);
 			DataMonitor.getInstance().unregisterListener(this);
 			handler.postDelayed(new Runnable() {
 				@Override
@@ -79,9 +79,8 @@ class DataManager implements DataMonitor.Listener {
 	private void enableDataAndSync() {
 		if(!shouldRun) {return;}
 		Log.v("DataManager", "enableDataAndSync");
-		DataUtils.setMobileDataEnabled(context, true);
+		DataUtils.setMobileDataEnabled(context, true, listener);
 		DataUtils.forceSync(context);
-		listener.onDataStatusChanged(true);
 	}
 	
 	private void prepareDisableData() {

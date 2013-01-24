@@ -9,15 +9,25 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.masonware.openbatterysaver.service.DataManager;
 import com.masonware.openbatterysaver.settings.Settings;
 import com.masonware.openbatterysaver.settings.Settings.SettingKey;
 
 public class DataUtils {
 	
+	public static void setMobileDataEnabled(Context context, boolean enabled, DataManager.Listener listener) {
+		setMobileDataEnabled(context, enabled);
+		if(listener != null) {
+			listener.onDataStatusChanged(enabled);
+		}
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void setMobileDataEnabled(Context context, boolean enabled) {
 		if(!Settings.hasSetting(SettingKey.DATA_USER_SETTING)) {
-			Settings.putBoolean(SettingKey.DATA_USER_SETTING, getMobileDataEnabled(context));
+			boolean isDataOn = getMobileDataEnabled(context);
+			Log.v("DataUtils", "Modifying mobile data setting. Original value=" + isDataOn);
+			Settings.putBoolean(SettingKey.DATA_USER_SETTING, isDataOn);
 		}
 		Log.v("DataUtils", "setMobileDataEnabled=" + enabled);
 	    final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -53,10 +63,16 @@ public class DataUtils {
 	}
 	
 	public static void resetMobileDataEnabled(Context context) {
+		resetMobileDataEnabled(context, null);
+	}
+	
+	public static void resetMobileDataEnabled(Context context, DataManager.Listener listener) {
 		if(!Settings.hasSetting(SettingKey.DATA_USER_SETTING)) {
 			return;
 		}
-		setMobileDataEnabled(context, Settings.getBoolean(SettingKey.DATA_USER_SETTING, false));
+		boolean userDataSetting = Settings.getBoolean(SettingKey.DATA_USER_SETTING, false);
+		Log.v("DataUtils", "Resetting mobile data to user setting: " + userDataSetting);
+		setMobileDataEnabled(context, userDataSetting, listener);
 		Settings.removeSetting(SettingKey.DATA_USER_SETTING);
 	}
 	

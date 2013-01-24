@@ -20,8 +20,7 @@ public class Settings {
 	}
 	
 	public static boolean hasSetting(SettingKey key) {
-		Object value = getSharedPreferences().contains(key.name());
-		return value != null;
+		return getSharedPreferences().contains(key.name());
 	}
 	
 	public static void removeSetting(SettingKey key) {
