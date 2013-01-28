@@ -13,7 +13,7 @@ public class DataManager implements DataMonitor.Listener {
 		public void onDataStatusChanged(boolean enabled);
 	}
 
-	private static final long DATA_MIN_THRESHOLD = 650;
+	private static final int DATA_MIN_THRESHOLD = 650;
 	private static final long WAKEUP_PERIOD = 1000 * 60 * 15;
 	private static final long MIN_SYNC_TIME = 1000 * 15;
 	

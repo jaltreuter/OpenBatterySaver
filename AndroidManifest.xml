@@ -16,20 +16,20 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.masonware.openbatterysaver.settings.SettingsActivity"
-            android:label="@string/app_name" >
+            android:name=".profiles.ProfilesBrowser"
+            android:label="Profiles" >
 		    <intent-filter>
 		        <action android:name="android.intent.action.MAIN" />
 		        <category android:name="android.intent.category.LAUNCHER" />
 		    </intent-filter>
         </activity>
         <activity
-            android:name="com.masonware.openbatterysaver.TestActivity"
-            android:label="Test" >
-		    <!--  intent-filter>
+            android:name="com.masonware.openbatterysaver.settings.SettingsActivity"
+            android:label="@string/app_name" >
+		    <intent-filter>
 		        <action android:name="android.intent.action.MAIN" />
 		        <category android:name="android.intent.category.LAUNCHER" />
-		    </intent-filter-->
+		    </intent-filter>
         </activity>
         
         <service

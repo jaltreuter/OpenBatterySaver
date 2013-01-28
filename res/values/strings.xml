@@ -1,5 +1,11 @@
 <resources>
 
     <string name="app_name">OpenBatterySaver</string>
+	<string name="ok">OK</string>
+	<string name="cancel">Cancel</string>
+	<string name="add">Add</string>
+	<string name="add_profile_title">Add Profile</string>
+	<string name="title">Name:</string>
+	<string name="downtime">Downtime:</string>
 
 </resources>

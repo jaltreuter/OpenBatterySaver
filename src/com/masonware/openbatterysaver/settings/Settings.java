@@ -84,4 +84,31 @@ public class Settings {
 		editor.putBoolean(key.name(), value);
 		editor.commit();
 	}
+	
+	public static void putProfile(BatteryProfile profile) {
+		String base = "BATTERY_PROFILE_" + profile.name;
+		SharedPreferences prefs = getSharedPreferences();
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(base + "_name", profile.name);
+		editor.putLong(base + "_downTime", profile.downTime);
+		editor.putLong(base + "_minUpTime", profile.minUpTime);
+		editor.putInt(base + "_dataRateCutoff", profile.dataRateCutoff);
+		editor.commit();
+	}
+	
+	public class BatteryProfile {
+		private String name;
+		private long downTime;
+		private long minUpTime;
+		private int dataRateCutoff;
+		
+		public BatteryProfile(String name, long downTime, long minUpTime, int dataRateCutoff) {
+			this.name = name;
+			this.downTime = downTime;
+			this.minUpTime = minUpTime;
+			this.dataRateCutoff = dataRateCutoff;
+		}
+		
+		
+	}
 }
