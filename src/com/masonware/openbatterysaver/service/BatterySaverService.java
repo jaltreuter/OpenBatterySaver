@@ -91,6 +91,7 @@ public class BatterySaverService extends Service implements DataManager.Listener
 				DataManager.getInstance().stop(this);
 			}
 		} else if (intent.getAction() == STOP_SERVICE) {
+			DataUtils.resetMobileDataEnabled(this);
 			stopSelf();
 		}
 	}
