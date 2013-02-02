@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.masonware.openbatterysaver.BatterySaverApplication;
+import com.masonware.openbatterysaver.settings.Settings;
+import com.masonware.openbatterysaver.settings.Settings.SettingKey;
 import com.masonware.openbatterysaver.utils.DataMonitor;
 import com.masonware.openbatterysaver.utils.DataUtils;
 
@@ -63,16 +65,19 @@ public class DataManager implements DataMonitor.Listener {
 	public void onDataRateUpdate(long bytesPerSecond) {
 		if(!shouldRun) {return;}
 		Log.v("DataManager", "onDataRateUpdate bps=" + bytesPerSecond);
-		if(bytesPerSecond < DATA_MIN_THRESHOLD) {
+		if(bytesPerSecond < Settings.getInt(SettingKey.DATA_MIN_THRESHOLD, DATA_MIN_THRESHOLD)) {
 			DataUtils.setMobileDataEnabled(context, false, listener);
 			DataMonitor.getInstance().unregisterListener(this);
+			
+			long wakeup_period = Settings.getLong(SettingKey.WAKEUP_PERIOD, WAKEUP_PERIOD); 
+			Log.v("DataManager", "Disabling data for " + wakeup_period);
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
 					enableDataAndSync();
 					prepareDisableData();
 				}
-			}, WAKEUP_PERIOD);
+			}, wakeup_period);
 		}
 	}
 	
@@ -91,7 +96,7 @@ public class DataManager implements DataMonitor.Listener {
 			public void run() {
 				disableDataAfterThreshold();
 			}
-		}, MIN_SYNC_TIME);
+		}, Settings.getLong(SettingKey.MIN_SYNC_TIME, MIN_SYNC_TIME));
 	}
 	
 	private void disableDataAfterThreshold() {

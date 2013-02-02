@@ -25,7 +25,7 @@ public class BatterySaverService extends Service implements DataManager.Listener
 	
 	private static final IntentFilter filter;
 	private static final String STOP_SERVICE = "com.masonware.stopbatterysaver";
-	private static final int NOTIFICATION_ID = 33853385;
+	private static final int NOTIFICATION_ID = 0;
 	static{
 		filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_SCREEN_OFF);

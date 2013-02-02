@@ -44,7 +44,7 @@ public class DataMonitor {
 	}
 	
 	private class DataMonitorThread extends Thread {
-		private static final long DELAY = 15000;
+		private static final long DELAY = 5000;
 		private static final long INVALID = -1;
 		private long loopStart;
 		private long prevTotalBytes;

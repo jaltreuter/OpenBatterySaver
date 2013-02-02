@@ -7,5 +7,7 @@
 	<string name="add_profile_title">Add Profile</string>
 	<string name="title">Name:</string>
 	<string name="downtime">Downtime:</string>
+	<string name="uptime">Uptime:</string>
+	<string name="rate_cutoff">Data rate cutoff:</string>
 
 </resources>
