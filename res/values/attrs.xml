@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="NumberPreference">
+        <attr name="minValue" format="integer" />
+        <attr name="maxValue" format="integer" />
+        <attr name="increment" format="integer" />
+        <attr name="unitLabel" format="string" />
+    </declare-styleable>
+    <declare-styleable name="DurationPreference">
+        <attr name="units" format="enum">
+			<enum name="hh_mm" value="0"/>
+			<enum name="mm_ss" value="1"/>
+       	</attr>
+    </declare-styleable>
+</resources>

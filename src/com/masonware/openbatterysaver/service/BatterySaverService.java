@@ -16,16 +16,16 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.masonware.openbatterysaver.R;
-import com.masonware.openbatterysaver.settings.Settings;
+import com.masonware.openbatterysaver.settings.SettingsUtil;
+import com.masonware.openbatterysaver.settings.SettingsUtil.SettingKey;
 import com.masonware.openbatterysaver.settings.SettingsActivity;
-import com.masonware.openbatterysaver.settings.Settings.SettingKey;
 import com.masonware.openbatterysaver.utils.DataUtils;
 
 public class BatterySaverService extends Service implements DataManager.Listener, OnSharedPreferenceChangeListener {
 	
 	private static final IntentFilter filter;
 	private static final String STOP_SERVICE = "com.masonware.stopbatterysaver";
-	private static final int NOTIFICATION_ID = 0;
+	private static final int NOTIFICATION_ID = 1;
 	static{
 		filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -123,9 +123,9 @@ public class BatterySaverService extends Service implements DataManager.Listener
 	}
 	
 	private int getNotificationPriority() {
-		return Settings.getBoolean(SettingKey.BATTERY_SAVER_SERVICE_ACTIVE, false) ?
-			Integer.parseInt(Settings.getString(SettingKey.NOTIFICATION_PRIORITY_ACTIVE, "0")) :
-			Integer.parseInt(Settings.getString(SettingKey.NOTIFICATION_PRIORITY_IDLE, "-2"));
+		return SettingsUtil.getBoolean(SettingKey.BATTERY_SAVER_SERVICE_ACTIVE, false) ?
+			Integer.parseInt(SettingsUtil.getString(SettingKey.NOTIFICATION_PRIORITY_ACTIVE, "0")) :
+			Integer.parseInt(SettingsUtil.getString(SettingKey.NOTIFICATION_PRIORITY_IDLE, "-2"));
 	}
 	
 	private void setServiceNotification() {
@@ -137,12 +137,12 @@ public class BatterySaverService extends Service implements DataManager.Listener
 	}
 	
 	private void determineIfActive(boolean enabled) {
-		boolean userSetting = Settings.getBoolean(SettingKey.DATA_USER_SETTING, false);
+		boolean userSetting = SettingsUtil.getBoolean(SettingKey.DATA_USER_SETTING, false);
 		boolean curSetting = enabled;
 		Log.v("BatterySaverService", "userSetting=" + userSetting + " curSetting=" + curSetting);
-		boolean active = Settings.getBoolean(SettingKey.DATA_USER_SETTING, enabled)
+		boolean active = SettingsUtil.getBoolean(SettingKey.DATA_USER_SETTING, enabled)
 				!= enabled;
 		Log.v("BatterySaverService", "Battery saver service active=" + active);
-		Settings.putBoolean(SettingKey.BATTERY_SAVER_SERVICE_ACTIVE, active);
+		SettingsUtil.putBoolean(SettingKey.BATTERY_SAVER_SERVICE_ACTIVE, active);
 	}
 }

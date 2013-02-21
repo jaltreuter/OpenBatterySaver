@@ -18,7 +18,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 
 import com.masonware.openbatterysaver.R;
-import com.masonware.openbatterysaver.settings.Settings.SettingKey;
+import com.masonware.openbatterysaver.settings.SettingsUtil.SettingKey;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -114,7 +114,7 @@ public class SettingsActivity extends PreferenceActivity {
 	    Switch switchBtn = (Switch) menu.findItem(R.id.switch_item).getActionView();
 	    final int padding = getResources().getDimensionPixelSize(R.dimen.action_bar_switch_padding);
 	    switchBtn.setPadding(0, 0, padding, 0);
-	    switchBtn.setChecked(Settings.getBoolean(SettingKey.BATTERY_SAVER_SERVICE_ON, false));
+	    switchBtn.setChecked(SettingsUtil.getBoolean(SettingKey.BATTERY_SAVER_SERVICE_ON, false));
 	    switchBtn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -123,7 +123,7 @@ public class SettingsActivity extends PreferenceActivity {
 				} else {
 					stopService(new Intent("com.masonware.batteryservice"));
 				}
-				Settings.putBoolean(SettingKey.BATTERY_SAVER_SERVICE_ON, isChecked);
+				SettingsUtil.putBoolean(SettingKey.BATTERY_SAVER_SERVICE_ON, isChecked);
 			}
 	    });
 	    return true;

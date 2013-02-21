@@ -5,7 +5,7 @@ import android.preference.PreferenceManager;
 
 import com.masonware.openbatterysaver.BatterySaverApplication;
 
-public class Settings {
+public class SettingsUtil {
 	
 	public static enum SettingKey {
 		BATTERY_SAVER_SERVICE_ON,
@@ -15,7 +15,11 @@ public class Settings {
 		DATA_USER_SETTING,
 		DATA_MIN_THRESHOLD,
 		WAKEUP_PERIOD,
-		MIN_SYNC_TIME;
+		MIN_SYNC_TIME,
+		NEW_PROFILE_TITLE,
+		NEW_PROFILE_DOWNTIME,
+		NEW_PROFILE_UPTIME,
+		NEW_PROFILE_RATE_CUTOFF;
 	}
 	
 	public static SharedPreferences getSharedPreferences() {

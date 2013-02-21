@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,8 +32,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.masonware.openbatterysaver.R;
-import com.masonware.openbatterysaver.settings.Settings;
-import com.masonware.openbatterysaver.settings.Settings.SettingKey;
+import com.masonware.openbatterysaver.settings.SettingsUtil;
+import com.masonware.openbatterysaver.settings.SettingsUtil.SettingKey;
 
 public class ProfilesFragment extends SherlockListFragment {
 	
@@ -87,9 +88,9 @@ public class ProfilesFragment extends SherlockListFragment {
 		int downtime = ProfileDBHelper.getInt(cursor, ProfileDBHelper.DOWNTIME);
 		int uptime = ProfileDBHelper.getInt(cursor, ProfileDBHelper.UPTIME);
 		int rate_cutoff = ProfileDBHelper.getInt(cursor, ProfileDBHelper.RATE_CUTOFF);
-		Settings.putLong(SettingKey.WAKEUP_PERIOD, downtime);
-		Settings.putLong(SettingKey.MIN_SYNC_TIME, uptime);
-		Settings.putInt(SettingKey.DATA_MIN_THRESHOLD, rate_cutoff);
+		SettingsUtil.putLong(SettingKey.WAKEUP_PERIOD, downtime);
+		SettingsUtil.putLong(SettingKey.MIN_SYNC_TIME, uptime);
+		SettingsUtil.putInt(SettingKey.DATA_MIN_THRESHOLD, rate_cutoff);
 		
 		int _id = ProfileDBHelper.getInt(cursor, ProfileDBHelper._ID);
 		ContentValues values = new ContentValues(1);
@@ -137,32 +138,34 @@ public class ProfilesFragment extends SherlockListFragment {
 	}
 	
 	private void add() {
-		LayoutInflater inflater = getActivity().getLayoutInflater();
-		View addView = inflater.inflate(R.layout.profile_add_edit, null);
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-		builder.setTitle(R.string.add_profile_title).setView(addView)
-			.setPositiveButton(R.string.ok, new OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					ContentValues values = new ContentValues(5);
-					AlertDialog dlg = (AlertDialog)dialog;
-					EditText title = (EditText)dlg.findViewById(R.id.title);
-					EditText downtime = (EditText)dlg.findViewById(R.id.downtime);
-					EditText uptime = (EditText)dlg.findViewById(R.id.uptime);
-					EditText rate_cutoff = (EditText)dlg.findViewById(R.id.rate_cutoff);
-
-					values.put(ProfileDBHelper.TITLE, title.getText().toString());
-					values.put(ProfileDBHelper.DOWNTIME, Integer.parseInt(downtime.getText().toString()));
-					values.put(ProfileDBHelper.UPTIME, Integer.parseInt(uptime.getText().toString()));
-					values.put(ProfileDBHelper.RATE_CUTOFF, Integer.parseInt(rate_cutoff.getText().toString()));
-					values.put(ProfileDBHelper.ACTIVATED, 0);
-
-					new InsertTask().execute(values);
-				}
-			})
-			.setNegativeButton(R.string.cancel, null)
-			.show();
+//		LayoutInflater inflater = getActivity().getLayoutInflater();
+//		View addView = inflater.inflate(R.layout.profile_add_edit, null);
+//		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//
+//		builder.setTitle(R.string.add_profile_title).setView(addView)
+//			.setPositiveButton(R.string.ok, new OnClickListener() {
+//				@Override
+//				public void onClick(DialogInterface dialog, int which) {
+//					ContentValues values = new ContentValues(5);
+//					AlertDialog dlg = (AlertDialog)dialog;
+//					EditText title = (EditText)dlg.findViewById(R.id.title);
+//					EditText downtime = (EditText)dlg.findViewById(R.id.downtime);
+//					EditText uptime = (EditText)dlg.findViewById(R.id.uptime);
+//					EditText rate_cutoff = (EditText)dlg.findViewById(R.id.rate_cutoff);
+//
+//					values.put(ProfileDBHelper.TITLE, title.getText().toString());
+//					values.put(ProfileDBHelper.DOWNTIME, Integer.parseInt(downtime.getText().toString()));
+//					values.put(ProfileDBHelper.UPTIME, Integer.parseInt(uptime.getText().toString()));
+//					values.put(ProfileDBHelper.RATE_CUTOFF, Integer.parseInt(rate_cutoff.getText().toString()));
+//					values.put(ProfileDBHelper.ACTIVATED, 0);
+//
+//					new InsertTask().execute(values);
+//				}
+//			})
+//			.setNegativeButton(R.string.cancel, null)
+//			.show();
+		
+		startActivityForResult(new Intent(getActivity(), ProfileActivity.class), ProfileActivity.ADD_REQUEST);
 	}
 	
 	private void delete(final Cursor cursor) {
@@ -195,9 +198,9 @@ public class ProfilesFragment extends SherlockListFragment {
 					int downtime = Integer.parseInt(downtimeView.getText().toString());
 					int uptime = Integer.parseInt(uptimeView.getText().toString());
 					int rate_cutoff = Integer.parseInt(rate_cutoffView.getText().toString());
-					Settings.putLong(SettingKey.WAKEUP_PERIOD, downtime);
-					Settings.putLong(SettingKey.MIN_SYNC_TIME, uptime);
-					Settings.putInt(SettingKey.DATA_MIN_THRESHOLD, rate_cutoff);
+					SettingsUtil.putLong(SettingKey.WAKEUP_PERIOD, downtime);
+					SettingsUtil.putLong(SettingKey.MIN_SYNC_TIME, uptime);
+					SettingsUtil.putInt(SettingKey.DATA_MIN_THRESHOLD, rate_cutoff);
 					values.put(ProfileDBHelper.TITLE, titleView.getText().toString());
 					values.put(ProfileDBHelper.DOWNTIME, downtime);
 					values.put(ProfileDBHelper.UPTIME, uptime);

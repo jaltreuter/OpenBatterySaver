@@ -1,0 +1,35 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:masonware="http://schemas.android.com/apk/res/com.masonware.openbatterysaver" >
+    <EditTextPreference
+        android:key="NEW_PROFILE_TITLE"
+        android:title="Title"
+        android:defaultValue="New Profile"
+        android:negativeButtonText="Cancel"
+        android:positiveButtonText="OK" />
+    <com.masonware.openbatterysaver.settings.DurationPreference
+        android:key="NEW_PROFILE_DOWNTIME"
+        android:title="Downtime"
+        android:defaultValue="900000"
+        android:negativeButtonText="Cancel"
+        android:positiveButtonText="OK"
+        masonware:units="hh_mm" />
+    <com.masonware.openbatterysaver.settings.DurationPreference
+        android:key="NEW_PROFILE_UPTIME"
+        android:title="Uptime"
+        android:defaultValue="10000"
+        android:negativeButtonText="Cancel"
+        android:positiveButtonText="OK"
+        masonware:units="mm_ss" />
+    <com.masonware.openbatterysaver.settings.NumberPreference
+        android:key="NEW_PROFILE_RATE_CUTOFF"
+        android:title="Data Rate Threshold"
+        android:negativeButtonText="Cancel"
+        android:positiveButtonText="OK"
+        android:defaultValue="600"
+        masonware:minValue="200"
+        masonware:maxValue="2000"
+        masonware:increment="200"
+        masonware:unitLabel="bytes/second" />
+
+</PreferenceScreen>
