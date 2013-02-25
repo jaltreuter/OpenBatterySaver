@@ -13,7 +13,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:name="com.masonware.openbatterysaver.BatterySaverApplication"
+        android:name=".BatterySaverApplication"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -25,17 +25,17 @@
 		    </intent-filter>
         </activity>
         <activity
-            android:name="com.masonware.openbatterysaver.settings.SettingsActivity"
+            android:name=".settings.SettingsActivity"
             android:label="@string/app_name" >
 		    <intent-filter>
 		        <action android:name="android.intent.action.MAIN" />
 		        <category android:name="android.intent.category.LAUNCHER" />
 		    </intent-filter>
         </activity>
-        <activity android:name="com.masonware.openbatterysaver.profiles.ProfileActivity" />
+        <activity android:name=".profiles.ProfileActivity" />
         
         <service
-            android:name="com.masonware.openbatterysaver.service.BatterySaverService"
+            android:name=".service.BatterySaverService"
             android:exported="false">
 		    <intent-filter>
 		        <action android:name="com.masonware.batteryservice" />
