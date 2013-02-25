@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -31,6 +32,7 @@ public class BatterySaverService extends Service implements DataManager.Listener
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(STOP_SERVICE);
+		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 	}
 
 	private PendingIntent launchSettings;
@@ -82,17 +84,19 @@ public class BatterySaverService extends Service implements DataManager.Listener
 	
 	private void handleBroadcastIntent(Intent intent) {
 		Log.v("BatterySaverService", "Intent received: " + intent);
-		if(intent.getAction() == Intent.ACTION_SCREEN_OFF) {
+		if(intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
 			if(!DataManager.getInstance().isRunning() && DataUtils.getMobileDataEnabled(this)) {
 				DataManager.getInstance().start(this);
 			}
-		} else if (intent.getAction() == Intent.ACTION_SCREEN_ON) {
+		} else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
 			if(DataManager.getInstance().isRunning()) {
 				DataManager.getInstance().stop(this);
 			}
-		} else if (intent.getAction() == STOP_SERVICE) {
+		} else if (intent.getAction().equals(STOP_SERVICE)) {
 			DataUtils.resetMobileDataEnabled(this);
 			stopSelf();
+		} else if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+			setServiceNotification();
 		}
 	}
 	
@@ -105,11 +109,11 @@ public class BatterySaverService extends Service implements DataManager.Listener
 			return null;
 		}
 		Notification.Builder builder = new Notification.Builder(this)
-        .setContentTitle("Data ???")
-        .setContentText("Say why...")
-//        .setLargeIcon(icon)
-        .setSmallIcon(R.drawable.notification_icon)
-        .setContentIntent(launchSettings);
+        	.setContentTitle(DataUtils.getMobileDataEnabled(this) ? "Data ON" : "Data OFF")
+        	.setContentText("Say why...")
+//        	.setLargeIcon(icon)
+        	.setSmallIcon(R.drawable.notification_icon)
+        	.setContentIntent(launchSettings);
 		Notification notification;
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			notification = builder
