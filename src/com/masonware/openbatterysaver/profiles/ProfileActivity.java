@@ -1,5 +1,6 @@
 package com.masonware.openbatterysaver.profiles;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -16,21 +17,30 @@ import com.masonware.openbatterysaver.settings.SettingsUtil.SettingKey;
 public class ProfileActivity extends PreferenceActivity {
 	
 	public static final int ADD_REQUEST = 0;
+	public static final int EDIT_REQUEST = 1;
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		SettingsUtil.removeSetting(SettingKey.NEW_PROFILE_TITLE);
-		SettingsUtil.removeSetting(SettingKey.NEW_PROFILE_DOWNTIME);
-		SettingsUtil.removeSetting(SettingKey.NEW_PROFILE_UPTIME);
-		SettingsUtil.removeSetting(SettingKey.NEW_PROFILE_RATE_CUTOFF);
 		addPreferencesFromResource(R.xml.profile);
-		bindPreferenceSummaryToValue(findPreference(SettingKey.NEW_PROFILE_TITLE.name()), "New Profile");
-		bindPreferenceSummaryToValue(findPreference(SettingKey.NEW_PROFILE_RATE_CUTOFF.name()), 600);
-        setTitle("New Profile");
+		if(getIntent().hasExtra(ProfilesFragment.EXTRA_PROFILE_TITLE)) {
+			setTitle("Edit \"" + getIntent().getStringExtra(ProfilesFragment.EXTRA_PROFILE_TITLE) + "\"");
+		} else {
+			setTitle("New Profile");
+		}
+		
+		String defTitle   = SettingsUtil.getString(SettingKey.NEW_PROFILE_TITLE, "New Profile");
+		int defDowntime   = SettingsUtil.getInt(SettingKey.NEW_PROFILE_DOWNTIME, 900000);
+		int defUptime     = SettingsUtil.getInt(SettingKey.NEW_PROFILE_UPTIME, 10000);
+		int defRateCutoff = SettingsUtil.getInt(SettingKey.NEW_PROFILE_RATE_CUTOFF, 600);
+		
+		bindPreferenceSummaryToValue(findPreference(SettingKey.NEW_PROFILE_TITLE.name()), defTitle);
+		findPreference(SettingKey.NEW_PROFILE_DOWNTIME.name()).setDefaultValue(defDowntime);
+		findPreference(SettingKey.NEW_PROFILE_UPTIME.name()).setDefaultValue(defUptime);
+		bindPreferenceSummaryToValue(findPreference(SettingKey.NEW_PROFILE_RATE_CUTOFF.name()), defRateCutoff);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    MenuInflater inflater = getMenuInflater();
@@ -52,11 +62,18 @@ public class ProfileActivity extends PreferenceActivity {
 	}
 	
 	private void save() {
-		
+		Intent returnIntent = new Intent();
+		if(getIntent().hasExtra(ProfilesFragment.EXTRA_PROFILE_ID)) {
+			returnIntent.putExtra(ProfilesFragment.EXTRA_PROFILE_ID, getIntent().getIntExtra(ProfilesFragment.EXTRA_PROFILE_ID, -1));
+		}
+		setResult(RESULT_OK, returnIntent);     
+		finish();
 	}
-	
+
 	private void cancel() {
-		
+		Intent returnIntent = new Intent();
+		setResult(RESULT_CANCELED, returnIntent);        
+		finish();
 	}
 	
 	private static void bindPreferenceSummaryToValue(Preference preference, Object defaultValue) {

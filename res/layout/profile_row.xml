@@ -12,7 +12,9 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"
 		android:textSize="20sp"
-		android:textStyle="bold"/>
+		android:textStyle="bold"
+		android:singleLine="true"
+		android:ellipsize="end" />"
 	<TextView
 		android:id="@+id/activated"
 		android:layout_width="wrap_content"

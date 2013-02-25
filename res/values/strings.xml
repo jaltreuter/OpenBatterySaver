@@ -9,5 +9,7 @@
 	<string name="downtime">Downtime:</string>
 	<string name="uptime">Uptime:</string>
 	<string name="rate_cutoff">Data rate cutoff:</string>
+	<string name="dialog_delete_profile_title">Delete Profile</string>
+	<string name="dialog_delete_profile_message">Are you sure you want to delete \"%1$s\"?</string>
 
 </resources>

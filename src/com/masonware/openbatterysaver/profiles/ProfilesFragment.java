@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -17,12 +18,10 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.CursorAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -39,6 +38,9 @@ public class ProfilesFragment extends SherlockListFragment {
 	
 	private static final int CONTEXT_MENU_EDIT = 1;
 	private static final int CONTEXT_MENU_DELETE = 2;
+	
+	public static final String EXTRA_PROFILE_ID = "profile_id";
+	public static final String EXTRA_PROFILE_TITLE = "profile_title";
 
 	private ProfileDBHelper db = null;
 	private Cursor contextCursor = null;
@@ -50,7 +52,6 @@ public class ProfilesFragment extends SherlockListFragment {
 		setRetainInstance(true);
 		db = new ProfileDBHelper(getActivity());
 		new LoadCursorTask().execute();
-//		getListView().setOnItemLongClickListener(this);
 		registerForContextMenu(getListView());
 	}
 
@@ -137,81 +138,61 @@ public class ProfilesFragment extends SherlockListFragment {
         return false;
 	}
 	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(Activity.RESULT_OK != resultCode) {return;}
+		ContentValues values = new ContentValues(5);
+		values.put(ProfileDBHelper.TITLE, SettingsUtil.getString(SettingKey.NEW_PROFILE_TITLE, "New Profile"));
+		values.put(ProfileDBHelper.DOWNTIME, SettingsUtil.getInt(SettingKey.NEW_PROFILE_DOWNTIME, 900000));
+		values.put(ProfileDBHelper.UPTIME, SettingsUtil.getInt(SettingKey.NEW_PROFILE_UPTIME, 10000));
+		values.put(ProfileDBHelper.RATE_CUTOFF, SettingsUtil.getInt(SettingKey.NEW_PROFILE_RATE_CUTOFF, 600));
+		switch(requestCode) {
+		case ProfileActivity.ADD_REQUEST:
+			values.put(ProfileDBHelper.ACTIVATED, 0);
+			new InsertTask().execute(values);
+			break;
+		case ProfileActivity.EDIT_REQUEST:
+			int id = data.getIntExtra(EXTRA_PROFILE_ID, -1);
+			new EditTask().execute(new EditRequest(id, values));
+			break;
+		}
+	}
+	
 	private void add() {
-//		LayoutInflater inflater = getActivity().getLayoutInflater();
-//		View addView = inflater.inflate(R.layout.profile_add_edit, null);
-//		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//
-//		builder.setTitle(R.string.add_profile_title).setView(addView)
-//			.setPositiveButton(R.string.ok, new OnClickListener() {
-//				@Override
-//				public void onClick(DialogInterface dialog, int which) {
-//					ContentValues values = new ContentValues(5);
-//					AlertDialog dlg = (AlertDialog)dialog;
-//					EditText title = (EditText)dlg.findViewById(R.id.title);
-//					EditText downtime = (EditText)dlg.findViewById(R.id.downtime);
-//					EditText uptime = (EditText)dlg.findViewById(R.id.uptime);
-//					EditText rate_cutoff = (EditText)dlg.findViewById(R.id.rate_cutoff);
-//
-//					values.put(ProfileDBHelper.TITLE, title.getText().toString());
-//					values.put(ProfileDBHelper.DOWNTIME, Integer.parseInt(downtime.getText().toString()));
-//					values.put(ProfileDBHelper.UPTIME, Integer.parseInt(uptime.getText().toString()));
-//					values.put(ProfileDBHelper.RATE_CUTOFF, Integer.parseInt(rate_cutoff.getText().toString()));
-//					values.put(ProfileDBHelper.ACTIVATED, 0);
-//
-//					new InsertTask().execute(values);
-//				}
-//			})
-//			.setNegativeButton(R.string.cancel, null)
-//			.show();
+		SettingsUtil.removeSetting(SettingKey.NEW_PROFILE_TITLE);
+		SettingsUtil.removeSetting(SettingKey.NEW_PROFILE_DOWNTIME);
+		SettingsUtil.removeSetting(SettingKey.NEW_PROFILE_UPTIME);
+		SettingsUtil.removeSetting(SettingKey.NEW_PROFILE_RATE_CUTOFF);
 		
 		startActivityForResult(new Intent(getActivity(), ProfileActivity.class), ProfileActivity.ADD_REQUEST);
 	}
 	
-	private void delete(final Cursor cursor) {
-		int id = cursor.getInt(cursor.getColumnIndex(ProfileDBHelper._ID));
-
-		new DeleteTask().execute(id);
-	}
-	
 	private void edit(final Cursor cursor) {
-		LayoutInflater inflater = getActivity().getLayoutInflater();
-		View addView = inflater.inflate(R.layout.profile_add_edit, null);
-		((EditText)addView.findViewById(R.id.title)).setText(ProfileDBHelper.getString(cursor, ProfileDBHelper.TITLE));
-		((EditText)addView.findViewById(R.id.downtime)).setText("" + ProfileDBHelper.getInt(cursor, ProfileDBHelper.DOWNTIME));
-		((EditText)addView.findViewById(R.id.uptime)).setText("" + ProfileDBHelper.getInt(cursor, ProfileDBHelper.UPTIME));
-		((EditText)addView.findViewById(R.id.rate_cutoff)).setText("" + ProfileDBHelper.getInt(cursor, ProfileDBHelper.RATE_CUTOFF));
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		SettingsUtil.putString(SettingKey.NEW_PROFILE_TITLE, ProfileDBHelper.getString(cursor, ProfileDBHelper.TITLE));
+		SettingsUtil.putInt(SettingKey.NEW_PROFILE_DOWNTIME, ProfileDBHelper.getInt(cursor, ProfileDBHelper.DOWNTIME));
+		SettingsUtil.putInt(SettingKey.NEW_PROFILE_UPTIME, ProfileDBHelper.getInt(cursor, ProfileDBHelper.UPTIME));
+		SettingsUtil.putInt(SettingKey.NEW_PROFILE_RATE_CUTOFF, ProfileDBHelper.getInt(cursor, ProfileDBHelper.RATE_CUTOFF));
+		
+		Intent editIntent = new Intent(getActivity(), ProfileActivity.class);
+		editIntent.putExtra(EXTRA_PROFILE_ID, cursor.getInt(cursor.getColumnIndex(ProfileDBHelper._ID)));
+		editIntent.putExtra(EXTRA_PROFILE_TITLE, cursor.getString(cursor.getColumnIndex(ProfileDBHelper.TITLE)));
+		startActivityForResult(editIntent, ProfileActivity.EDIT_REQUEST);
+	}
 
-		builder.setTitle(R.string.add_profile_title)
-			.setView(addView)
+	private void delete(final Cursor cursor) {
+		final int id = cursor.getInt(cursor.getColumnIndex(ProfileDBHelper._ID));
+		final String title = cursor.getString(cursor.getColumnIndex(ProfileDBHelper.TITLE));
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(getString(R.string.dialog_delete_profile_title))
+			.setNegativeButton(R.string.cancel, null)
+			.setMessage(getString(R.string.dialog_delete_profile_message, title))
 			.setPositiveButton(R.string.ok, new OnClickListener() {
 				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					ContentValues values = new ContentValues(4);
-					AlertDialog dlg = (AlertDialog)dialog;
-					EditText titleView = (EditText)dlg.findViewById(R.id.title);
-					EditText downtimeView = (EditText)dlg.findViewById(R.id.downtime);
-					EditText uptimeView = (EditText)dlg.findViewById(R.id.uptime);
-					EditText rate_cutoffView = (EditText)dlg.findViewById(R.id.rate_cutoff);
-
-					int downtime = Integer.parseInt(downtimeView.getText().toString());
-					int uptime = Integer.parseInt(uptimeView.getText().toString());
-					int rate_cutoff = Integer.parseInt(rate_cutoffView.getText().toString());
-					SettingsUtil.putLong(SettingKey.WAKEUP_PERIOD, downtime);
-					SettingsUtil.putLong(SettingKey.MIN_SYNC_TIME, uptime);
-					SettingsUtil.putInt(SettingKey.DATA_MIN_THRESHOLD, rate_cutoff);
-					values.put(ProfileDBHelper.TITLE, titleView.getText().toString());
-					values.put(ProfileDBHelper.DOWNTIME, downtime);
-					values.put(ProfileDBHelper.UPTIME, uptime);
-					values.put(ProfileDBHelper.RATE_CUTOFF, rate_cutoff);
-					
-					int id = cursor.getInt(cursor.getColumnIndex(ProfileDBHelper._ID));
-					
-					new EditTask().execute(new EditRequest(id, values));
+				public void onClick(DialogInterface arg0, int arg1) {
+					new DeleteTask().execute(id);
 				}
 			})
-			.setNegativeButton(R.string.cancel, null)
 			.show();
 	}
 
